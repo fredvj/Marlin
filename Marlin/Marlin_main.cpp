@@ -826,33 +826,32 @@ static void homeaxis(int axis) {
   }
 }
 #define HOMEAXIS(LETTER) homeaxis(LETTER##_AXIS)
-
 void deploy_z_probe() {
   feedrate = homing_feedrate[X_AXIS];
-  destination[X_AXIS] = 30; // T3P3 Kossel Mini
-  destination[Y_AXIS] = 96; // T3P3 Kossel Mini
+  destination[X_AXIS] = 30; // T3P3 Kossel Mini R2
+  destination[Y_AXIS] = 87; // T3P3 Kossel Mini R2
   destination[Z_AXIS] = 50;
   prepare_move_raw();
 
   feedrate = homing_feedrate[X_AXIS]/10;
-  destination[X_AXIS] = -7; // T3P3 Kossel Mini  
+  destination[X_AXIS] = -2; // T3P3 Kossel Mini  
   prepare_move_raw();
   st_synchronize();
 }
 
 void retract_z_probe() {
   feedrate = homing_feedrate[X_AXIS];
-  destination[Z_AXIS] = current_position[Z_AXIS] + 40; // T3P3 Kossel Mini 
+  destination[Z_AXIS] = current_position[Z_AXIS] + 20; // T3P3 Kossel Mini R2
   prepare_move_raw();
 
-  destination[X_AXIS] = -61;
-  destination[Y_AXIS] = 66;
-  destination[Z_AXIS] = 35;
+  destination[X_AXIS] = -54;
+  destination[Y_AXIS] = 64;
+  destination[Z_AXIS] = 22.2;
   prepare_move_raw();
 
   // Move the nozzle below the print surface to push the probe up.
   feedrate = homing_feedrate[Z_AXIS]/10;
-  destination[Z_AXIS] = current_position[Z_AXIS] - 30;
+  destination[Z_AXIS] = current_position[Z_AXIS] - 20;
   prepare_move_raw();
 
   feedrate = homing_feedrate[Z_AXIS];

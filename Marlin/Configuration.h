@@ -9,7 +9,7 @@
 // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
 // build by the user have been successfully uploaded into firmware.
 #define STRING_VERSION_CONFIG_H __DATE__ " " __TIME__ // build date and time
-#define STRING_CONFIG_H_AUTHOR "(jcrocholl, Mini Kossel, T3P3 20140920)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(jcrocholl, Mini Kossel, T3P3 20150201)" // Who made the changes.
 
 // SERIAL_PORT selects which serial port should be used for communication with the host.
 // This allows the connection of wireless adapters (for instance) to non-default port pins.
@@ -140,7 +140,7 @@
 // 52 is 200k thermistor - ATC Semitec 204GT-2 (1k pullup)
 // 55 is 100k thermistor - ATC Semitec 104GT-2 (Used in ParCan) (1k pullup)
 
-#define TEMP_SENSOR_0 7 // T3P3 1.75mm J-head with Honeywell thermistor
+#define TEMP_SENSOR_0 5// T3P3 Use 7 for J-head or 5 for E3D V6
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_BED 11 // T3P3 alu heatbed with Kapton heater and 3950 thermistor
@@ -192,10 +192,13 @@
 // If you are using a preconfigured hotend then you can use one of the value sets by uncommenting it
 
 // T3P3 1.75mm JHead with Honeywell
-    #define  DEFAULT_Kp 31.32
-    #define  DEFAULT_Ki 2.73
-    #define  DEFAULT_Kd 89.80
-
+//    #define  DEFAULT_Kp 31.32
+//    #define  DEFAULT_Ki 2.73
+//    #define  DEFAULT_Kd 89.80
+ // T3P3 1.75mm E3D V6 with Semitec
+     #define  DEFAULT_Kp 21.28
+     #define  DEFAULT_Ki 2.37
+     #define  DEFAULT_Kd 47.76
 // Ultimaker
 //    #define  DEFAULT_Kp 22.2
 //    #define  DEFAULT_Ki 1.08
@@ -331,10 +334,10 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #define min_software_endstops true // If true, axis won't move to coordinates less than HOME_POS.
 #define max_software_endstops true  // If true, axis won't move to coordinates greater than the defined lengths below.
 // Travel limits after homing
-#define X_MAX_POS 85 // T3P3, default 90
-#define X_MIN_POS -85 // T3P3, default -90
-#define Y_MAX_POS 85 // T3P3, default 90
-#define Y_MIN_POS -85 // T3P3, default -90
+#define X_MAX_POS 90 // T3P3, default 90
+#define X_MIN_POS -90 // T3P3, default -90
+#define Y_MAX_POS 90 // T3P3, default 90
+#define Y_MIN_POS -90 // T3P3, default -90
 #define Z_MAX_POS MANUAL_Z_HOME_POS
 #define Z_MIN_POS 0
 
@@ -350,7 +353,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 // For deltabots this means top and center of the cartesian print volume.
 #define MANUAL_X_HOME_POS 0
 #define MANUAL_Y_HOME_POS 0
-#define MANUAL_Z_HOME_POS 236.9 // For delta: Distance between nozzle and print surface after homing.
+#define MANUAL_Z_HOME_POS 235 // T3P3, with V6 and heated bed. With J-head and no heated bed start at 255
 
 #define AUTOLEVEL_GRID 22  // Distance between autolevel Z probing points, should be less than print surface radius/3.
 
@@ -358,7 +361,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #define NUM_AXIS 4 // The axis order in all axis related arrays is X, Y, Z, E
 #define HOMING_FEEDRATE {100*60, 100*60, 100*60, 0}  // set the homing speeds (mm/min) (derated from 9000 to 6000)
 
-#define Z_PROBE_OFFSET {1.2, 17.60, -4.80, 0}  // X, Y, Z, E distance between hotend nozzle and deployed bed leveling probe. // T3P3. defaults {0, 13, -7.15, 0 }
+#define Z_PROBE_OFFSET {3.3, 24.0, -2.2, 0}  // X, Y, Z, E distance between hotend nozzle and deployed bed leveling probe for T3P3 with V6
 
 // default settings
 
@@ -397,7 +400,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 
  //Filament management (added by T3P3 based on https://github.com/lajos/Marlin/blob/tantillus/Marlin)
 #define EASY_LOAD					
-#define BOWDEN_LENGTH 560
+#define BOWDEN_LENGTH 500
 #define LCD_PURGE_LENGTH 3				
 #define LCD_RETRACT_LENGTH 3			
 #define LCD_PURGE_FEEDRATE 200		
