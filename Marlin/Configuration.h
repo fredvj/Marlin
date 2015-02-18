@@ -9,7 +9,7 @@
 // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
 // build by the user have been successfully uploaded into firmware.
 #define STRING_VERSION_CONFIG_H __DATE__ " " __TIME__ // build date and time
-#define STRING_CONFIG_H_AUTHOR "(jcrocholl, Mini Kossel, T3P3 20150201)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(fredvj, 20150216)" // Who made the changes.
 
 // SERIAL_PORT selects which serial port should be used for communication with the host.
 // This allows the connection of wireless adapters (for instance) to non-default port pins.
@@ -86,10 +86,10 @@
 #define DELTA_DIAGONAL_ROD 215.0 // mm (T3P3, default 215)
 
 // Horizontal offset from middle of printer to smooth rod center.
-#define DELTA_SMOOTH_ROD_OFFSET 145.1 // mm  (T3P3, default 145) //145.1 = redkossel
+#define DELTA_SMOOTH_ROD_OFFSET 145.4 // mm  (T3P3, default 145) //145.1 = redkossel
 
 // Horizontal offset of the universal joints on the end effector.
-#define DELTA_EFFECTOR_OFFSET 19.9 // mm (T3P3, default 19.9)
+#define DELTA_EFFECTOR_OFFSET 23 // mm (T3P3, default 19.9)
 
 // Horizontal offset of the universal joints on the carriages.
 #define DELTA_CARRIAGE_OFFSET 19.5 // mm (T3P3, default 19.5)
@@ -143,7 +143,7 @@
 #define TEMP_SENSOR_0 5// T3P3 Use 7 for J-head or 5 for E3D V6
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
-#define TEMP_SENSOR_BED 11 // T3P3 alu heatbed with Kapton heater and 3950 thermistor
+#define TEMP_SENSOR_BED 0 // T3P3 alu heatbed with Kapton heater and 3950 thermistor
 
 // This makes temp sensor 1 a redundant sensor for sensor 0. If the temperatures difference between these sensors is to high the print will be aborted.
 //#define TEMP_SENSOR_1_AS_REDUNDANT
@@ -195,10 +195,11 @@
 //    #define  DEFAULT_Kp 31.32
 //    #define  DEFAULT_Ki 2.73
 //    #define  DEFAULT_Kd 89.80
- // T3P3 1.75mm E3D V6 with Semitec
-     #define  DEFAULT_Kp 21.28
-     #define  DEFAULT_Ki 2.37
-     #define  DEFAULT_Kd 47.76
+
+// E3D v6 1.75mm - Values from autotune: M303 E0 S200 C10
+    #define  DEFAULT_Kp 24.52
+    #define  DEFAULT_Ki 2.97
+    #define  DEFAULT_Kd 50.62
 // Ultimaker
 //    #define  DEFAULT_Kp 22.2
 //    #define  DEFAULT_Ki 1.08
@@ -294,7 +295,7 @@
 // The pullups are needed if you directly connect a mechanical endswitch between the signal and ground pins.
 const bool X_MIN_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
 const bool Y_MIN_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
-const bool Z_MIN_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
+const bool Z_MIN_ENDSTOP_INVERTING = true; // set to true to invert the logic of the endstop.
 const bool X_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
 const bool Y_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
 const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
@@ -353,7 +354,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 // For deltabots this means top and center of the cartesian print volume.
 #define MANUAL_X_HOME_POS 0
 #define MANUAL_Y_HOME_POS 0
-#define MANUAL_Z_HOME_POS 235 // T3P3, with V6 and heated bed. With J-head and no heated bed start at 255
+#define MANUAL_Z_HOME_POS 215 // T3P3, with V6 and heated bed. With J-head and no heated bed start at 255
 
 #define AUTOLEVEL_GRID 22  // Distance between autolevel Z probing points, should be less than print surface radius/3.
 
@@ -361,11 +362,11 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #define NUM_AXIS 4 // The axis order in all axis related arrays is X, Y, Z, E
 #define HOMING_FEEDRATE {100*60, 100*60, 100*60, 0}  // set the homing speeds (mm/min) (derated from 9000 to 6000)
 
-#define Z_PROBE_OFFSET {3.3, 24.0, -2.2, 0}  // X, Y, Z, E distance between hotend nozzle and deployed bed leveling probe for T3P3 with V6
+#define Z_PROBE_OFFSET {1.3, 16.4, -4.0, 0}  // X, Y, Z, E distance between hotend nozzle and deployed bed leveling probe for E3D v6 Hotend
 
 // default settings
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {80, 80, 80, 663} // T3P3 for 20T pulleys & RRP mini geared extruder
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {80, 80, 80, 300} // T3P3 for 20T pulleys & RRP mini geared extruder
 #define DEFAULT_MAX_FEEDRATE          {1000, 1000, 1000, 800}    // (mm/sec) T3P3: defaults {200, 200, 200, 200} 
 #define DEFAULT_MAX_ACCELERATION      {9000,9000,9000,9000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
@@ -393,10 +394,10 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 // M501 - reads parameters from EEPROM (if you need reset them after you changed them temporarily).
 // M502 - reverts to the default "factory settings".  You still need to store them in EEPROM afterwards if you want to.
 //define this to enable eeprom support
- #define EEPROM_SETTINGS // T3P3 default is off during calibration. Turn on afterwards if preferred.
+#define EEPROM_SETTINGS // T3P3 default is off during calibration. Turn on afterwards if preferred.
 //to disable EEPROM Serial responses and decrease program space by ~1700 byte: comment this out:
 // please keep turned on if you can.
- #define EEPROM_CHITCHAT // T3P3 default is off during calibration. Turn on afterwards if preferred.
+#define EEPROM_CHITCHAT // T3P3 default is off during calibration. Turn on afterwards if preferred.
 
  //Filament management (added by T3P3 based on https://github.com/lajos/Marlin/blob/tantillus/Marlin)
 #define EASY_LOAD					
@@ -411,17 +412,17 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
  
 // Preheat Constants
 #define PLA_PREHEAT_HOTEND_TEMP 195 // T3P3
-#define PLA_PREHEAT_HPB_TEMP 70 // T3P3: Set to 60 - 80C if you have a heated print bed
+#define PLA_PREHEAT_HPB_TEMP 60 // T3P3: Set to 60 - 80C if you have a heated print bed
 #define PLA_PREHEAT_FAN_SPEED 0   // [T3P3 No PWM fan] Insert Value between 0 and 255
 
-#define ABS_PREHEAT_HOTEND_TEMP 245 // T3P3
-#define ABS_PREHEAT_HPB_TEMP 120 // T3P3: Set to 120C if you have a heated print bed
+#define ABS_PREHEAT_HOTEND_TEMP 230 // T3P3
+#define ABS_PREHEAT_HPB_TEMP 100 // T3P3: Set to 120C if you have a heated print bed
 #define ABS_PREHEAT_FAN_SPEED 0   // [T3P3 No PWM fan] Insert Value between 0 and 255
 
 //LCD and SD support
 //#define ULTRA_LCD  //general lcd support, also 16x2
 //#define DOGLCD  // Support for SPI LCD 128x64 (Controller ST7565R graphic Display Family)
-#define SDSUPPORT // Enable SD Card Support in Hardware Console
+//#define SDSUPPORT // Enable SD Card Support in Hardware Console
 //#define SDSLOW // Use slower SD transfer mode (not normally needed - uncomment if you're getting volume init error)
 
 //#define ULTIMAKERCONTROLLER //as available from the ultimaker online store.
@@ -430,7 +431,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 
 //The Think3dPrint3d Panelone
 // http://reprap.org/wiki/PanelOne
-#define PANELONE
+//#define PANELONE
 
 // The MaKr3d Makr-Panel with graphic controller and SD support
 // http://reprap.org/wiki/MaKr3d_MaKrPanel
@@ -448,7 +449,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 // http://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
 // ==> REMEMBER TO INSTALL U8glib to your ARDUINO library folder: http://code.google.com/p/u8glib/wiki/u8glib
-//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
 
 // The RepRapWorld REPRAPWORLD_KEYPAD v1.1
 // http://reprapworld.com/?products_details&products_id=202&cPath=1591_1626
