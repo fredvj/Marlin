@@ -826,38 +826,118 @@ static void homeaxis(int axis) {
   }
 }
 #define HOMEAXIS(LETTER) homeaxis(LETTER##_AXIS)
-void deploy_z_probe() {
+
+// G1 X0 Y0 Z50 F5000
+// G1 X40 Y0 Z10 F5000
+// G1 X40 Y87 Z10 F5000
+// G1 X23 Y87 Z10 F500
+// G1 X30 Y40 Z20 F5000
+// -- G1 X0 Y0 Z50 F5000
+
+boolean deploy_z_probe(void) {
   feedrate = homing_feedrate[X_AXIS];
-  destination[X_AXIS] = 30; // T3P3 Kossel Mini R2
-  destination[Y_AXIS] = 87; // T3P3 Kossel Mini R2
+  destination[X_AXIS] = 0;
+  destination[Y_AXIS] = 0;
   destination[Z_AXIS] = 50;
   prepare_move_raw();
 
-  feedrate = homing_feedrate[X_AXIS]/10;
-  destination[X_AXIS] = -2; // T3P3 Kossel Mini  
+  destination[X_AXIS] = 40;
+  destination[Y_AXIS] = 87;
+  destination[Z_AXIS] = 10;
   prepare_move_raw();
+
+  feedrate = homing_feedrate[X_AXIS]/10;
+  destination[X_AXIS] = 23;
+  destination[Y_AXIS] = 87;
+  destination[Z_AXIS] = 10;
+  prepare_move_raw();
+
+  feedrate = homing_feedrate[X_AXIS];
+  destination[X_AXIS] = 30;
+  destination[Y_AXIS] = 40;
+  destination[Z_AXIS] = 20;
+  prepare_move_raw();
+
   st_synchronize();
+
+  // Our expectation is a NOT triggered state for the Z_MIN_ENDSTOP
+  
+#if defined(Z_MIN_PIN) && Z_MIN_PIN > -1
+  if((READ(Z_MIN_PIN)^Z_MIN_ENDSTOP_INVERTING)) {
+    // Something went wrong
+    
+    SERIAL_PROTOCOLPGM("Check Z-Probe: ");
+    SERIAL_PROTOCOL((READ(Z_MIN_PIN)^Z_MIN_ENDSTOP_INVERTING));
+    SERIAL_PROTOCOLLN(" - deploy_z_probe() failed.");
+
+    Stop();
+    
+    return(false);
+  }
+  
+  // Everything is fine
+  
+  SERIAL_PROTOCOLPGM("Z-Probe successfully deployed.");
+  SERIAL_PROTOCOLLN("");
+#endif
+
+  return(true);
 }
 
-void retract_z_probe() {
+// G1 X0 Y0 Z50 F5000
+// G1 X-55 Y65 Z30 F5000
+// G1 X-55 Y65 Z18 F500
+// -- G1 X-55 Y65 Z30 F5000 -> G1 X-50 Y50 Z30
+// -- G1 X0 Y0 Z50 F5000
+
+boolean retract_z_probe(void) {
   feedrate = homing_feedrate[X_AXIS];
-  destination[Z_AXIS] = current_position[Z_AXIS] + 20; // T3P3 Kossel Mini R2
+  destination[X_AXIS] = 0;
+  destination[Y_AXIS] = 0;
+  destination[Z_AXIS] = 50;
   prepare_move_raw();
 
-  destination[X_AXIS] = -54;
-  destination[Y_AXIS] = 64;
-  destination[Z_AXIS] = 22.2;
+  destination[X_AXIS] = -55;
+  destination[Y_AXIS] = 65;
+  destination[Z_AXIS] = 30;
   prepare_move_raw();
 
-  // Move the nozzle below the print surface to push the probe up.
   feedrate = homing_feedrate[Z_AXIS]/10;
-  destination[Z_AXIS] = current_position[Z_AXIS] - 20;
+  destination[X_AXIS] = -55;
+  destination[Y_AXIS] = 65;
+  destination[Z_AXIS] = 18;
   prepare_move_raw();
 
   feedrate = homing_feedrate[Z_AXIS];
-  destination[Z_AXIS] = current_position[Z_AXIS] + 30;
+  destination[X_AXIS] = -50;
+  destination[Y_AXIS] = 50;
+  destination[Z_AXIS] = 30;
   prepare_move_raw();
+
   st_synchronize();
+
+  // Our expectation is a triggered state for the Z_MIN_ENDSTOP
+  
+#if defined(Z_MIN_PIN) && Z_MIN_PIN > -1
+  if(!(READ(Z_MIN_PIN)^Z_MIN_ENDSTOP_INVERTING)) {
+    // Something went wrong
+    
+    SERIAL_PROTOCOLPGM("Check Z-Probe: ");
+    SERIAL_PROTOCOL((READ(Z_MIN_PIN)^Z_MIN_ENDSTOP_INVERTING));
+    SERIAL_PROTOCOLLN(" - retract_z_probe() failed.");
+
+    Stop();
+    
+    return(false);
+  }
+  
+  // Everything is fine
+  
+  SERIAL_PROTOCOLPGM("Z-Probe successfully retracted.");
+  SERIAL_PROTOCOLLN("");
+#endif
+
+  return(true);
 }
 
 float z_probe() {
@@ -1149,10 +1229,18 @@ void process_commands()
       saved_feedmultiply = feedmultiply;
       feedmultiply = 100;
 
-      deploy_z_probe();
-      calibrate_print_surface(z_probe_offset[Z_AXIS] +
-	(code_seen(axis_codes[Z_AXIS]) ? code_value() : 0.0));
-      retract_z_probe();
+      // Try to deploy the Z-Probe and run the calibration
+      
+      if(deploy_z_probe()) {
+        // Z-Probe deployed okay ... run calibration
+        
+        calibrate_print_surface(z_probe_offset[Z_AXIS] +
+	  (code_seen(axis_codes[Z_AXIS]) ? code_value() : 0.0));
+
+        // Retract the probe
+        
+        retract_z_probe();
+      }
 
       feedrate = saved_feedrate;
       feedmultiply = saved_feedmultiply;
@@ -2293,6 +2381,7 @@ void process_commands()
     case 999: // M999: Restart after being stopped
       Stopped = false;
       lcd_reset_alert_level();
+      LCD_MESSAGEPGM("Restarted.");
       gcode_LastN = Stopped_gcode_LastN;
       FlushSerialRequestResend();
     break;
