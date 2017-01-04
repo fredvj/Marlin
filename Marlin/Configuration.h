@@ -641,7 +641,9 @@
 // 20161226, fredvj - Calibrated probe
 #define X_PROBE_OFFSET_FROM_EXTRUDER 0.7     // X offset: -left  +right  [of the nozzle]
 #define Y_PROBE_OFFSET_FROM_EXTRUDER 15.7   // Y offset: -front +behind [the nozzle]
-#define Z_PROBE_OFFSET_FROM_EXTRUDER -4.1  // Z offset: -below +above  [the nozzle]
+//#define Z_PROBE_OFFSET_FROM_EXTRUDER -4.1  // Z offset: -below +above  [the nozzle]
+//#define Z_PROBE_OFFSET_FROM_EXTRUDER -4.0  // Z offset: -below +above  [the nozzle] - 20170102, fredvj
+#define Z_PROBE_OFFSET_FROM_EXTRUDER -4.15  // Z offset: -below +above  [the nozzle] - 20170102, fredvj
 
 // X and Y axis travel speed (mm/m) between probes
 #define XY_PROBE_SPEED 4000
