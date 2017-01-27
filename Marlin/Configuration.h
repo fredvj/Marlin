@@ -86,7 +86,7 @@
 // User-specified version info of this build to display in [Pronterface, etc] terminal window during
 // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
 // build by the user have been successfully uploaded into firmware.
-#define STRING_CONFIG_H_AUTHOR "(fredvj, 20161225)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(fredvj, 20170122)" // Who made the changes.
 #define SHOW_BOOTSCREEN
 #define STRING_SPLASH_LINE1 SHORT_BUILD_VERSION // will be shown during bootup in line 1
 #define STRING_SPLASH_LINE2 WEBSITE_URL         // will be shown during bootup in line 2
@@ -545,8 +545,8 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2[, E3]]]
  */
-// 20161226, fredvj - Calibrated extruder
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 80, 300 }  // default steps per unit for Kossel (GT2, 20 tooth)
+// 20170122, fredvj - Direct drive extruder
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 80, 150 }  // default steps per unit for Kossel (GT2, 20 tooth)
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -754,7 +754,7 @@
 // To use a probe you must enable one of the two options above!
 
 // Enable Z Probe Repeatability test to see how accurate your probe is
-//#define Z_MIN_PROBE_REPEATABILITY_TEST
+#define Z_MIN_PROBE_REPEATABILITY_TEST
 
 /**
  * Z probes require clearance when deploying, stowing, and moving between
