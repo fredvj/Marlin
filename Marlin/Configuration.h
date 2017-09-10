@@ -448,8 +448,8 @@
   // fredvj - Center-to-center distance of the holes in the diagonal push rods.
   #define DELTA_DIAGONAL_ROD 215.0 // mm
 
-  // Calibrated 20161226, fredvj - Horizontal offset from middle of printer to smooth rod center.
-  #define DELTA_SMOOTH_ROD_OFFSET 151.1 // mm
+  // Calibrated 20170128 (M665 R102.50 => 151.3), fredvj - Horizontal offset from middle of printer to smooth rod center.
+  #define DELTA_SMOOTH_ROD_OFFSET 151.3 // mm
 
   // fredvj - Horizontal offset of the universal joints on the end effector.
   #define DELTA_EFFECTOR_OFFSET 22.3 // mm
@@ -473,7 +473,9 @@
   // After homing move down to a height where XY movement is unconstrained
   #define DELTA_HOME_TO_SAFE_ZONE
 
-  //#define DELTA_ENDSTOP_ADJ { 0, 0, 0 }
+  // This is the data from software calibration that we would not need if we adjusted the hardware endstops (M666 X-2.49 Y-1.99 Z-2.96); 20170128 fredvj
+  // You will see this on startup as M666 values when issuing the M502 command (restore firmware defaults)
+  #define DELTA_ENDSTOP_ADJ { -2.49, -1.99, -2.96 }
 
 #endif
 
@@ -553,7 +555,7 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 500, 500, 500, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 1000, 1000, 1000, 800 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -561,7 +563,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2[, E3]]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 9000, 9000, 9000, 10000 }
+#define DEFAULT_MAX_ACCELERATION      { 9000, 9000, 9000, 9000 }
 
 /**
  * Default Acceleration (change/s) change = mm/s
@@ -648,11 +650,11 @@
 // X and Y axis travel speed (mm/m) between probes
 #define XY_PROBE_SPEED 4000
 // Speed for the first approach when double-probing (with PROBE_DOUBLE_TOUCH)
-#define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z
+#define Z_PROBE_SPEED_FAST (HOMING_FEEDRATE_Z / 2)
 // Speed for the "accurate" probe of each point
 #define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 2)
 // Use double touch for probing
-//#define PROBE_DOUBLE_TOUCH
+#define PROBE_DOUBLE_TOUCH
 
 // Allen key retractable z-probe as seen on many Kossel delta printers - http://reprap.org/wiki/Kossel#Automatic_bed_leveling_probe
 // Deploys by touching z-axis belt. Retracts by pushing the probe down. Uses Z_MIN_PIN.
@@ -985,8 +987,8 @@
 //#define MANUAL_X_HOME_POS 0
 //#define MANUAL_Y_HOME_POS 0
 
-// Calibrated 20161226, fredvj
-#define MANUAL_Z_HOME_POS 212.7 // Distance between the nozzle to printbed after homing
+// Decreased heigth from 212.7 to 210 to allow M666 command to make adjustments in software; moving away from hardware calibration; 20170128, fredvj
+#define MANUAL_Z_HOME_POS 210.0 // Distance between the nozzle to printbed after homing
 
 // Use "Z Safe Homing" to avoid homing with a Z probe outside the bed area.
 //
@@ -1004,7 +1006,8 @@
 #endif
 
 // Delta only homes to Z
-#define HOMING_FEEDRATE_Z  (200*60)
+//#define HOMING_FEEDRATE_Z  (200*60)
+#define HOMING_FEEDRATE_Z  (9000)
 
 //=============================================================================
 //============================= Additional Features ===========================
